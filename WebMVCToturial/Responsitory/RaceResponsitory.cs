@@ -38,7 +38,10 @@ namespace WebMVCToturial.Responsitory
         {
             return await _context.Race.Include(o => o.Address).FirstOrDefaultAsync(p => p.Id == id);
         }
-
+        public async Task<Race?> GetByIdAsyncNoTracking(int id)
+        {
+            return await _context.Race.Include(i => i.Address).AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
+        }
         public bool Save()
         {
             return _context.SaveChanges() > 0 ? true : false;

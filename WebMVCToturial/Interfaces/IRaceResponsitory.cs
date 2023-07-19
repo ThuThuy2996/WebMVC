@@ -6,6 +6,7 @@ namespace WebMVCToturial.Interfaces
     {
         Task<IEnumerable<Race>> GetAll();
         Task<IEnumerable<Race>> GetClubsByCity(string city);
+        Task<Race?> GetByIdAsyncNoTracking(int id);
         Task<Race> GetById(int id);
         bool Add(Race race);
 
