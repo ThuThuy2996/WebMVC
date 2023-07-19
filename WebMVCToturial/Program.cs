@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using WebMVCToturial.Data;
+using WebMVCToturial.Helpers;
 using WebMVCToturial.Interfaces;
 using WebMVCToturial.Responsitory;
+using WebMVCToturial.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IClubResponsitory, ClubResponsitory>();
 builder.Services.AddScoped<IRaceResponsitory, RaceResponsitory>();
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 var app = builder.Build();
 

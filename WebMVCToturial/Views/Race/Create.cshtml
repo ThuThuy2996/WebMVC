@@ -1,5 +1,6 @@
 ﻿@using WebMVCToturial.Data.Enum
-@model Race
+@using WebMVCToturial.ViewModels
+@model CreateRaceViewModel
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -20,7 +21,7 @@
     </div>
     <div class="form-group">
         <label asp-for="Image">Image</label>
-        <input asp-for="Image" class="form-control" placeholder="Enter Image">
+        <input type="file" asp-for="Image" class="form-control" placeholder="Enter Image">
         <span asp-validation-for="Image" class="text-danger"> </span>
     </div>
     <div class="form-group">

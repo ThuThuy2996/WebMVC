@@ -3,15 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using WebMVCToturial.Data;
 using WebMVCToturial.Interfaces;
 using WebMVCToturial.Models;
+using WebMVCToturial.ViewModels;
 
 namespace WebMVCToturial.Controllers
 {
     public class RaceController : Controller
     {
         private readonly IRaceResponsitory _raceResponitory;
-        public RaceController(IRaceResponsitory raceResponitory)
+        private readonly IPhotoService _photoService;
+        public RaceController(IRaceResponsitory raceResponitory, IPhotoService photoService)
         {
             _raceResponitory = raceResponitory;
+            _photoService = photoService;
         }
         public async Task<IActionResult> Index()
         {
@@ -30,14 +33,42 @@ namespace WebMVCToturial.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Race race)
+        public async Task<IActionResult> Create(CreateRaceViewModel raceViewModel)
         {
             if (ModelState.IsValid)
             {
-                _raceResponitory.Add(race);
-                return RedirectToAction("Index");
+                var uploadResult = await _photoService.AddPhotoAsync(raceViewModel.Image);
+                if (uploadResult.Error == null)
+                {
+                    var race = new Race
+                    {
+                        Title = raceViewModel.Title,
+                        Description = raceViewModel.Description,
+                        Image = uploadResult.Url.ToString(),
+                        RaceCategory = raceViewModel.RaceCategory,
+
+                        Address = new Address
+                        {
+                            Street = raceViewModel.Address.Street,
+                            City = raceViewModel.Address.City,
+                            State = raceViewModel.Address.State,
+                        }
+                    };
+                    _raceResponitory.Add(race);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Photo upload failed ! Please try again!");
+                }
             }
-            return View(race);
+            else
+            {
+                ModelState.AddModelError("", "Photo upload failed ! Please try again!");
+
+            }
+            return View(raceViewModel);
+
         }
     }
 }
