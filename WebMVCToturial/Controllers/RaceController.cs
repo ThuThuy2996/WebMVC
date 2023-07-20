@@ -146,5 +146,25 @@ namespace WebMVCToturial.Controllers
             }
             return RedirectToAction("Index");
         }
+        public async Task<IActionResult> Delete(int id)
+        {
+            var race = await _raceResponitory.GetById(id);
+            if (race != null)
+            {
+                return View(race);
+            }
+            return View("Race is not found");
+        }
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteRace(int id)
+        {
+            var race = await _raceResponitory.GetById(id);
+            if (race != null)
+            {
+                return _raceResponitory.Delete(race) ? RedirectToAction("Index") : View("Error", race);
+            }
+            return View("Not Found", race);
+        }
+
     }
 }
