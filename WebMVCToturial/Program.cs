@@ -1,7 +1,11 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebMVCToturial.Data;
 using WebMVCToturial.Helpers;
 using WebMVCToturial.Interfaces;
+using WebMVCToturial.Models;
 using WebMVCToturial.Responsitory;
 using WebMVCToturial.Services;
 
@@ -25,12 +29,16 @@ builder.Services.AddScoped<IRaceResponsitory, RaceResponsitory>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 
+builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddMemoryCache();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
 var app = builder.Build();
 
 if (args.Length == 1 && args[0].ToLower() == "seeddata")
 {
-    //await Seed.SeedUsersAndRolesAsync(app);
-    Seed.SeedData(app);
+  await Seed.SeedUsersAndRolesAsync(app);
+   // Seed.SeedData(app);
 }
 
 // Configure the HTTP request pipeline.
